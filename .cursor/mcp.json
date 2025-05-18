@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "bun x",
+      "args": ["@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "context7": {
+      "command": "bun x",
+      "args": ["@upstash/context7-mcp"]
+    },
+    "interactive-feedback-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/seungwonan/Dev/3-tool/mcp/interactive-feedback-mcp",
+        "run",
+        "server.py"
+      ],
+      "timeout": 600,
+      "autoApprove": ["interactive_feedback"]
+    },
+    "playwright": {
+      "command": "bun x",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "supabase": {
+      "command": "bun x",
+      "args": [
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "your_supabase_access_token"
+      ]
+    }
+  }
+}
