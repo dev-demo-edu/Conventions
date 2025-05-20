@@ -6,7 +6,10 @@
   - [Issue Label Setting](#issue-label-setting)
 - [Code Style Convention](#code-style-convention)
   - [prettier](#prettier)
+  - [eslint](#eslint)
+  - [tsconfig](#tsconfig)
   - [pre-commit](#pre-commit)
+- [Comment Convention](#comment-convention)
 - [NextJS Convention](#nextjs-convention)
   - [Package Manager](#package-manager)
   - [File Name Convention](#file-name-convention)
@@ -21,6 +24,7 @@
     - [src/utils](#srcutils)
   - [src/states](#srcstates)
     - [src/types](#srctypes)
+  - [tests](#tests)
 - [Package Convention](#package-convention)
   - [Vitest](#vitest)
   - [TailwindCSS](#tailwindcss)
@@ -111,6 +115,69 @@
 }
 ```
 
+### eslint
+
+`// eslint-disable-next-line` 주석은 정말 필요한 경우에만 사용하며, 가능한 한 ESLint 규칙을 준수하는 방향으로 코드를 수정하는 것을 우선시합니다.
+
+```mjs
+// .eslintrc.mjs
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+];
+
+export default eslintConfig;
+```
+
+### tsconfig
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "noImplicitAny": false, // any 타입 허용
+    "skipLibCheck": true,
+    "strict": false, // 엄격한 타입 검사 비활성화
+    "forceConsistentCasingInFileNames": false, // 파일 이름의 대소문자 일관성 비활성화
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
 ### pre-commit
 
 ```shell
@@ -139,6 +206,109 @@ chmod +x .husky/*
 . "$(dirname -- "$0")/_/husky.sh"
 
 pnpm lint-staged
+```
+
+## Comment Convention
+
+- [Todo Highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight) Extension 설치
+- Commend Palette -> `Preferences: Open User Settings (JSON)` -> 아래 코드 추가
+  - TODO: 해야 할 작업 표시 (미구현 기능, 추가 개발 필요 사항)
+  - NOTE: 중요한 설명이나 주의사항 기록
+  - FIXME: 수정이 필요한 버그나 문제점 표시
+  - TEST: 테스트가 필요한 부분이나 테스트 케이스 기록
+
+```json
+{
+  "todohighlight.include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.html",
+    "**/*.php",
+    "**/*.css",
+    "**/*.scss",
+    "**/*.py",
+    "*/*"
+  ],
+  "todohighlight.exclude": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.vscode/**",
+    "**/.github/**",
+    "**/_output/**",
+    "**/*.min.*",
+    "**/*.map",
+    "**/.next/**"
+  ],
+  "todohighlight.maxFilesForSearch": 5120,
+  "todohighlight.toggleURI": false,
+  "todohighlight.isEnable": true,
+  "todohighlight.isCaseSensitive": true,
+  "todohighlight.defaultStyle": {
+    "color": "red",
+    "backgroundColor": "#2B2B2B",
+    "overviewRulerColor": "#ffab00",
+    "cursor": "pointer",
+    "border": "1px solid #eee",
+    "borderRadius": "2px",
+    "isWholeLine": true
+  },
+  "todohighlight.keywords": [
+    // Common
+    {
+      "text": "TODO:",
+      "color": "#DFB6FF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#DFB6FF"
+    },
+    {
+      "text": "NOTE:",
+      "color": "#98ECAB",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#98ECAB"
+    },
+    {
+      "text": "FIXME:",
+      "color": "#FFB3B3",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#FFB3B3"
+    },
+    {
+      "text": "TEST:",
+      "color": "#C8B9FF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#C8B9FF"
+    },
+    // python linter
+    {
+      "text": "pylint:",
+      "color": "#9B6BAB",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#9B6BAB"
+    },
+    {
+      "text": "flake8:",
+      "color": "#55A465",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#55A465"
+    },
+    {
+      "text": "noqa:",
+      "color": "#407FBF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#407FBF"
+    },
+    {
+      "text": "eslint-disable-next-line",
+      "color": "#4630BD",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#407FBF"
+    }
+  ]
+}
 ```
 
 ## NextJS Convention

@@ -7,6 +7,7 @@
 - [Code Style Convention](#code-style-convention)
   - [Black](#black)
   - [pre-commit](#pre-commit)
+- [Comment Convention](#comment-convention)
 - [Cursor Convention](#cursor-convention)
   - [Code Writing](#code-writing)
   - [File Context](#file-context)
@@ -84,18 +85,18 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-        args: ['--target-version', 'py313']
+        args: ["--target-version", "py313"]
   - repo: https://github.com/pycqa/flake8
     rev: 7.1.1
     hooks:
       - id: flake8
-        args: ['--config=.flake8']
+        args: ["--config=.flake8"]
   - repo: https://github.com/pylint-dev/pylint
     rev: v3.3.4
     hooks:
       - id: pylint
         args:
-          - '--rcfile=.pylintrc'
+          - "--rcfile=.pylintrc"
 ```
 
 ```shell
@@ -106,6 +107,103 @@ uv add pre-commit
 pre-commit install
 # or
 uv run pre-commit install
+```
+
+## Comment Convention
+
+- [Todo Highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight) Extension 설치
+- Commend Palette -> `Preferences: Open User Settings (JSON)` -> 아래 코드 추가
+  - TODO: 해야 할 작업 표시 (미구현 기능, 추가 개발 필요 사항)
+  - NOTE: 중요한 설명이나 주의사항 기록
+  - FIXME: 수정이 필요한 버그나 문제점 표시
+  - TEST: 테스트가 필요한 부분이나 테스트 케이스 기록
+
+```json
+{
+  "todohighlight.include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.html",
+    "**/*.php",
+    "**/*.css",
+    "**/*.scss",
+    "**/*.py",
+    "*/*"
+  ],
+  "todohighlight.exclude": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.vscode/**",
+    "**/.github/**",
+    "**/_output/**",
+    "**/*.min.*",
+    "**/*.map",
+    "**/.next/**"
+  ],
+  "todohighlight.maxFilesForSearch": 5120,
+  "todohighlight.toggleURI": false,
+  "todohighlight.isEnable": true,
+  "todohighlight.isCaseSensitive": true,
+  "todohighlight.defaultStyle": {
+    "color": "red",
+    "backgroundColor": "#2B2B2B",
+    "overviewRulerColor": "#ffab00",
+    "cursor": "pointer",
+    "border": "1px solid #eee",
+    "borderRadius": "2px",
+    "isWholeLine": true
+  },
+  "todohighlight.keywords": [
+    // Common
+    {
+      "text": "TODO:",
+      "color": "#DFB6FF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#DFB6FF"
+    },
+    {
+      "text": "NOTE:",
+      "color": "#98ECAB",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#98ECAB"
+    },
+    {
+      "text": "FIXME:",
+      "color": "#FFB3B3",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#FFB3B3"
+    },
+    {
+      "text": "TEST:",
+      "color": "#C8B9FF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#C8B9FF"
+    },
+    // python linter
+    {
+      "text": "pylint:",
+      "color": "#9B6BAB",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#9B6BAB"
+    },
+    {
+      "text": "flake8:",
+      "color": "#55A465",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#55A465"
+    },
+    {
+      "text": "noqa:",
+      "color": "#407FBF",
+      "backgroundColor": "#2B2B2B",
+      "overviewRulerColor": "#407FBF"
+    }
+  ]
+}
 ```
 
 ## Cursor Convention
@@ -119,6 +217,40 @@ uv run pre-commit install
 2. 각 코드 파일의 첫 100줄에 해당 파일의 기능과 구현 로직을 명확히 문서화하세요.
 
 > Cursor는 파일 검색 시 최대 100줄의 코드를 읽습니다. 파일의 초반부에 주석을 통해 해당 파일의 목적과 주요 로직을 설명하면, Cursor 에이전트가 파일의 역할을 빠르게 파악하여 적절한 처리를 수행할 수 있습니다.
+
+```tsx
+/**
+ * @file UserProfile.tsx
+ * @description 사용자 프로필 페이지 컴포넌트
+ *
+ * 이 컴포넌트는 사용자의 프로필 정보를 표시하고 수정하는 기능을 제공합니다.
+ *
+ * 주요 기능:
+ * 1. 사용자 기본 정보 표시 (이름, 이메일, 프로필 이미지)
+ * 2. 프로필 정보 수정
+ * 3. 프로필 이미지 업로드
+ *
+ * 구현 로직:
+ * - Supabase Auth를 통한 사용자 인증 상태 확인
+ * - React Query를 사용한 프로필 데이터 fetching
+ * - 이미지 업로드를 위한 Supabase Storage 활용
+ * - Form 상태 관리를 위한 React Hook Form 사용
+ *
+ * @dependencies
+ * - @supabase/ssr
+ * - @tanstack/react-query
+ * - react-hook-form
+ * - @heroicons/react
+ */
+
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { createClient } from "@/utils/supabase/client";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+
+// ... 컴포넌트 구현 ...
+```
 
 3. 프로젝트의 상태와 구조를 `README.md`와 같은 전용 파일에 정기적으로 문서화하세요.
 
